@@ -21,7 +21,10 @@ public class MainPlayer : MonoBehaviour {
 
 	public void Reset() {
 		mController.Reset();
-		mAccel.Set(0.0f, 0.0f, 0.0f);
+		transform.position = new Vector3(0.0f, 1.0f, 0.0f);
+		mAccel = new Vector3(0.0f, 0.0f, 0.0f);
+		mBody.velocity = new Vector3(0.0f, 5.0f, 0.0f);
+		mBody.angularVelocity = new Vector3(0.0f, 0.0f, 0.0f);
 	}
 
 	public void FixedUpdate () {
@@ -30,12 +33,19 @@ public class MainPlayer : MonoBehaviour {
 
 		AddInputForces();
 	}
+	
+	public void OnTriggerStay(Collider c) {
+		if (c.tag == "kill_volume") {
+			Debug.Log("Collided with " + c.name + ":" + c.tag);
+			Reset ();
+		}
+	}
 
 	public void AddInputForces () {
 		IsAirborne = !MainPlayer.IsGrounded(transform.position, GetComponent<SphereCollider>());
 
 		if (mController.IsPressingJump() && !IsAirborne) {
-			mBody.AddForce(new Vector3(0.0f, mAttribs.MaxVertAccel * 10.0f, 0.0f));
+			mBody.AddForce(new Vector3(0.0f, mAttribs.MaxVertAccel * 5.0f, 0.0f));
 		}
 	}
 
